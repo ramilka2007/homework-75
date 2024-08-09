@@ -43,7 +43,6 @@ const homeSlice = createSlice({
     builder
       .addCase(decodingMsg.pending, (state: HomeState) => {
         state.isDecoding = true;
-        console.log(state.isDecoding);
       })
       .addCase(
         decodingMsg.fulfilled,
