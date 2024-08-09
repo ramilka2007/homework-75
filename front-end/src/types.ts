@@ -1,18 +1,18 @@
 export interface MessageInfo {
-    decode: string;
-    encode: string;
-    password: string;
+  decode: string;
+  encode: string;
+  password: string;
 }
 
 export interface Message {
-    message: string;
-    password: string;
+  message: string;
+  password: string;
 }
 
 export interface EncodedMsg {
-    encoded: string;
+  encoded: string;
 }
 
 export interface DecodedMsg {
-    decoded: string;
+  decoded: string;
 }

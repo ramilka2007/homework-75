@@ -1,12 +1,12 @@
-import './App.css'
-import Home from "./features/Home/Home.tsx";
+import './App.css';
+import Home from './features/Home/Home.tsx';
 
 const App = () => {
   return (
     <>
-      <Home/>
+      <Home />
     </>
-  )
+  );
 };
 
-export default App
+export default App;
