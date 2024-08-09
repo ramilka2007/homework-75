@@ -3,10 +3,11 @@ import {Button, Grid, TextField} from "@mui/material";
 import {Message, MessageInfo} from "../../types.ts";
 import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {decodingMsg, encodingMsg} from "./homeThunk.ts";
-import {selectEncodeMsg} from "./homeSlice.ts";
+import {selectDecodeMsg, selectEncodeMsg} from "./homeSlice.ts";
 
 const Home = () => {
     const encode = useAppSelector(selectEncodeMsg);
+    const decode = useAppSelector(selectDecodeMsg);
     const dispatch = useAppDispatch();
     const [messageInfo, setMessageInfo] = React.useState<MessageInfo>({
         decode: '',
@@ -19,9 +20,20 @@ const Home = () => {
             setMessageInfo((prevState) => ({
                 ...prevState,
                 decode: encode.encoded,
+                encode: ''
             }));
         }
     }, [encode]);
+
+    useEffect(() => {
+        if (decode !== null) {
+            setMessageInfo((prevState) => ({
+                ...prevState,
+                encode: decode.decoded,
+                decode: ''
+            }));
+        }
+    }, [decode]);
 
     const encodeMsg = async () => {
         try {
@@ -30,10 +42,27 @@ const Home = () => {
                 password: messageInfo.password
             }
 
-            if (messageDecode.password.trim().length > 0 && messageDecode.message.trim().length > 0)  {
+            if (messageDecode.password !== '' && messageDecode.message !== '')  {
                 await dispatch(encodingMsg(messageDecode)).unwrap();
             } else {
                 alert('Please write something in password part or encode part')
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const decodeMsg = async () => {
+        try {
+            const messageDecode: Message = {
+                message: messageInfo.decode,
+                password: messageInfo.password
+            }
+
+            if (messageDecode.password !== '' && messageDecode.message !== 0)  {
+                await dispatch(decodingMsg(messageDecode)).unwrap();
+            } else {
+                alert('Please write something in password part or decode part')
             }
         } catch (e) {
             console.error(e);
@@ -62,7 +91,7 @@ const Home = () => {
                     name="decode"
                     onChange={onChange}
                     style={{ width: "400px" }}
-                    defaultValue={messageInfo.decode}
+                    value={messageInfo.decode}
                 />
             </Grid>
             <hr/>
@@ -74,10 +103,10 @@ const Home = () => {
                     id="password"
                     name="password"
                     onChange={onChange}
-                    defaultValue={messageInfo.password}
+                    value={messageInfo.password}
                 />
-                <Button onClick={() => encodeMsg()}>Encode</Button>
-                <Button>Decode</Button>
+                <Button onClick={() => encodeMsg()} disabled={messageInfo.encode === ''}>Encode</Button>
+                <Button onClick={() => decodeMsg()} disabled={messageInfo.decode === ''}>Decode</Button>
             </Grid>
             <hr/>
             <TextField
@@ -88,7 +117,7 @@ const Home = () => {
                 name="encode"
                 onChange={onChange}
                 style={{ width: "400px" }}
-                defaultValue={messageInfo.encode}
+                value={messageInfo.encode}
             />
         </Grid>
     );

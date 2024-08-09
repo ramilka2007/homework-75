@@ -1,5 +1,5 @@
 import {DecodedMsg, EncodedMsg} from "../../types.ts";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 import {decodingMsg, encodingMsg} from "./homeThunk.ts";
 
 export interface HomeState {
@@ -21,14 +21,21 @@ const homeSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(encodingMsg.fulfilled, (state: HomeState, {payload: encoded}) => {
             state.encode = encoded;
+            state.decode = null;
         });
+
+        builder.addCase(decodingMsg.fulfilled, (state: HomeState, {payload: decoded}) => {
+            state.decode = decoded
+            state.encode = null;
+        })
     },
     selectors: {
         selectEncodeMsg: (state) => state.encode,
+        selectDecodeMsg: (state) => state.decode,
         selectIsFetching: (state) => state.isFetching,
     }
 });
 
 export const homeReducer = homeSlice.reducer;
 
-export const {selectEncodeMsg} = homeSlice.selectors;
+export const {selectEncodeMsg, selectDecodeMsg} = homeSlice.selectors;

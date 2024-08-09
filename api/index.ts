@@ -28,7 +28,19 @@ app.post('/encode', (req, res) => {
     res.send({
         encoded: vigenereCipher(message, password, false),
     });
+});
+
+app.post('/decode', (req, res) => {
+    const { message, password } = req.body;
+    if (message === '' || password === '') {
+        return res.status(400).send('Password or message is empty');
+    }
+
+    res.send({
+        decoded: vigenereCipher(message, password, true),
+    });
 })
+
 
 app.listen(port, () => {
     console.log(`Server started on ${port} port!`);
